@@ -11,30 +11,44 @@ import UIKit
 class TodoListViewController: UITableViewController {
     
     let itemArray = ["I Want To Be", "The Very Best", "Like No One Ever Was"]
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
-
+    
     //MARK: - TableView DataSource Methods
     
     // Return the number of rows for the table.
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
     }
-
-
+    
+    
     // Provide a cell object for each row.
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       // Fetch a cell of the appropriate type.
-       let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-       
-       // Configure the cell’s contents.
+        // Fetch a cell of the appropriate type.
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        
+        // Configure the cell’s contents.
         cell.textLabel!.text = itemArray[indexPath.row]
-           
-       return cell
+        
+        return cell
     }
-
+    
+    //MARK: - TableView Delegate Methods
+    
+    override func tableView(_ tableView: UITableView,didSelectRowAt indexPath: IndexPath) {
+        print(itemArray[indexPath.row])
+        
+        if tableView.cellForRow(at: indexPath)?.accessoryType == UITableViewCell.AccessoryType.none {
+            tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.checkmark
+        } else {
+            tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.none
+        }
+        
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
 }
-
