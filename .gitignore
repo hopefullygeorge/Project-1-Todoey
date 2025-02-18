@@ -1,0 +1,55 @@
+# Xcode specific files
+.DS_Store
+UserInterfaceState.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+
+# Build artifacts
+build/
+DerivedData/
+*.o
+*.d
+*.map
+*.tbd
+*.dia
+
+# Swift Package Manager
+.swiftpm/
+Package.resolved
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+
+# Ignore Xcode project workspace
+*.xcworkspace/
+
+# Ignore Playgrounds data
+timeline.xctimeline
+playground.xcworkspace
+
+# Ignore test result files
+*.xctestoutput
+*.xcresult
+
+# Ignore environment and dependency files
+.env
+*.log
+
+# Ignore unnecessary archives
+*.xcarchive
+
+# Ignore generated code
+*.hmap
+*.modulemap
+
+# Ignore custom debug files
+debug.xcconfig
