@@ -17,10 +17,11 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        // To find file path for app files ->
+        // print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-//        loadItems()
+        
+        loadItems()
 
     }
     
@@ -59,6 +60,11 @@ class TodoListViewController: UITableViewController {
     //MARK: - TableView Delegate Methods
     
     override func tableView(_ tableView: UITableView,didSelectRowAt indexPath: IndexPath) {
+        // Lesson on how to delete items from database.
+        //Important to note the order in which it is deleted.
+        
+//        context.delete(itemArray[indexPath.row])
+//        itemArray.remove(at: indexPath.row)
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
@@ -106,16 +112,38 @@ class TodoListViewController: UITableViewController {
         tableView.reloadData()
     }
     
-//    func loadItems() {
-//        
-//        if let data = try? Data(contentsOf: dataFilePath!) {
-//            let decoder = PropertyListDecoder()
-//            do {
-//                itemArray =  try decoder.decode([Item].self, from: data)
-//            } catch {
-//                print("Error loading data, \(error)")
-//            }
-//        }
-//        
-//    }
+    // Pass in default if no input given
+    func loadItems(with request : NSFetchRequest<Item> = Item.fetchRequest()) {
+        
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Error fetching data from context, \(error)")
+        }
+        tableView.reloadData()
+    }
+}
+
+//MARK: - Search Bar Delegate Methods
+
+@available(iOS 16.0, *)
+//Run viewcontroller when searchbar's state is changed.
+extension TodoListViewController : UISearchBarDelegate {
+    
+//    When search button is clicked, ->
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        //  Define request to grab what is in the persistentContainer
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        //  Use predicate to create a query, finding any title that contains text in searchbar
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        
+        //  Create a rule to organise data
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        //  Try to add fetched data to itemArray and display in table
+        loadItems(with: request)
+
+    }
 }
