@@ -146,4 +146,26 @@ extension TodoListViewController : UISearchBarDelegate {
         loadItems(with: request)
 
     }
+    // Function to trigger when the text changes within the search bar
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        // If there are no characters in the search bar
+        if searchBar.text?.count == 0 {
+            // Diplay all items
+            loadItems()
+            // Use the dispatchque to grab the main thread and execute ->
+            DispatchQueue.main.async {
+                // Tell the search bar to stop being selected
+                searchBar.resignFirstResponder()
+            }
+        } else {
+            // This uses the same code for when the search button is pressed.
+            let request : NSFetchRequest<Item> = Item.fetchRequest()
+            
+            request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+
+            request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+            
+            loadItems(with: request)
+        }
+    }
 }
