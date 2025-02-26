@@ -18,7 +18,7 @@ class CategoryViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadItems()
+        loadCategories()
     }
     
     //MARK: - TableView Datasource Methods
@@ -44,7 +44,7 @@ class CategoryViewController: UITableViewController {
     
     //MARK: - Data Manipulation Methods
     
-    func saveItems() {
+    func saveCategories() {
         do {
             try context.save()
         } catch {
@@ -54,7 +54,7 @@ class CategoryViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    func loadItems(with request : NSFetchRequest<Category> = Category.fetchRequest()) {
+    func loadCategories(with request : NSFetchRequest<Category> = Category.fetchRequest()) {
         
         do {
             categoryArray = try context.fetch(request)
@@ -63,6 +63,31 @@ class CategoryViewController: UITableViewController {
         }
         tableView.reloadData()
     }
+    
+    //MARK: - TableView Delegate Methods
+    
+    // Grab name of category selected
+    // Segue to Item View
+    // Display Items that possess the selected category
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "goToItems", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if #available(iOS 16.0, *) {
+            let destinationVC = segue.destination as! TodoListViewController
+            
+            if let indexPath = tableView.indexPathForSelectedRow {
+                destinationVC.selectedCategory = categoryArray[indexPath.row]
+            }
+            
+            
+        } else {
+            print("Error, version 16.0 needed as minimum")
+        }
+    }
+
     
     
     //MARK: - Add New Categories
@@ -81,21 +106,13 @@ class CategoryViewController: UITableViewController {
             newCategory.name = alert.textFields?.first?.text ?? "No Value"
             
             self.categoryArray.append(newCategory)
-            self.saveItems()
-
-            }
+            self.saveCategories()
+            
+        }
         
         alert.addAction(action)
         
         present(alert, animated: true, completion: nil)
     }
-    
-    
-    
-    
-    
-    //MARK: - TableView Delegate Methods
-    
-    
     
 }
