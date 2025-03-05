@@ -7,9 +7,11 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryViewController: UITableViewController {
+    
+    let realm = try! Realm()
     
     var categoryArray = [Category]()
 
@@ -44,9 +46,11 @@ class CategoryViewController: UITableViewController {
     
     //MARK: - Data Manipulation Methods
     
-    func saveCategories() {
+    func save(category: Category) {
         do {
-            try context.save()
+            try realm.write {
+                realm.add(category)
+            }
         } catch {
             print("Error saving data to database, \(error)")
         }
@@ -102,11 +106,11 @@ class CategoryViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
             //What will happen when the user clicks the Add Item button on our UIAlert
             
-            let newCategory = Category(context: self.context)
-            newCategory.name = alert.textFields?.first?.text ?? "No Value"
+            let newCategory = Category()
+            newCategory.name = (alert.textFields?.first?.text)!
             
             self.categoryArray.append(newCategory)
-            self.saveCategories()
+            self.save(category: newCategory)
             
         }
         
